@@ -28,21 +28,11 @@ import HTTPClient.NVPair
  *
  */
 @RunWith(GrinderRunner)
-class TestRunner {
+class TestRunner extends BaseTest  {
 
-    public static GTest test
-    public static HTTPRequest request
-    public static NVPair[] headers = []
-    public static Cookie[] cookies = []
-    // HTTP请求域名
-    public static String uri = "http://148.70.59.59:5000"
-    //HTTP请求接口后缀
-    public static String url = "/"
-    //HTTP POST参数
-    public static byte[] jsonBody
-    //加载的资源文件
+    //加载的资源文件内容
     public static List jsons
-
+    //加载header文件内容
     public static List header
 
     /**
@@ -54,6 +44,8 @@ class TestRunner {
         grinder.logger.info("before process.")
         HTTPPluginControl.getConnectionDefaults().timeout = 60000
         test = new GTest(1, "148.70.59.59")
+        url = "http://148.70.59.59:5000"
+        uri = "/"
         request = new HTTPRequest()
         //加载资源文件
         jsons = BaseTestUtils.getResourcesList("/test.txt")
@@ -94,12 +86,8 @@ class TestRunner {
     @Test
     public void test(){
 
-        HTTPResponse result = request.POST(uri+url, jsonBody)
+        HTTPResponse result = request.POST(url+uri, jsonBody)
 
-        if (result.statusCode == 301 || result.statusCode == 302) {
-            grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", result.statusCode);
-        } else {
-            assertThat(result.statusCode, is(200));
-        }
+        assertResult(result)
     }
 }
